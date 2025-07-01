@@ -1,6 +1,7 @@
 import board
 
 import busio
+import digitalio
 import displayio
 import terminalio
 
@@ -12,7 +13,7 @@ import time
 
 backlight = digitalio.DigitalInOut(board.GP25)
 backlight.direction = digitalio.Direction.OUTPUT
-backlight.value = True  # turn on display backlight
+backlight.value = True
 
 # --- Display setup (adjust pins for your board) ---
 spi = busio.SPI(clock=board.GP10, MOSI=board.GP11)
