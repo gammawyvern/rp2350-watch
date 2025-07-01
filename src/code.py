@@ -1,5 +1,5 @@
+import time
 import board
-
 import busio
 import digitalio
 import displayio
@@ -9,7 +9,7 @@ from adafruit_display_text.label import Label
 from adafruit_gc9a01a import GC9A01A
 from fourwire import FourWire
 
-import time
+import text  
 
 backlight = digitalio.DigitalInOut(board.GP25)
 backlight.direction = digitalio.Direction.OUTPUT
@@ -41,8 +41,10 @@ start_minutes = 0
 start_seconds = 0
 start_monotonic = time.monotonic()
 
+time_label.text = text.OUTPUT_TEXT
 # --- Main loop ---
 while True:
+    break
     elapsed = int(time.monotonic() - start_monotonic)
     total_seconds = start_seconds + elapsed
     hours = (start_hours + (start_minutes + total_seconds // 60) // 60) % 24
