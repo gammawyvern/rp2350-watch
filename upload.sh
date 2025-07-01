@@ -1,26 +1,39 @@
 #!/bin/bash
 set -euo pipefail
 
-SRC_FILE=${1:-code.py}
-DEVICE=$(lsblk -o NAME,LABEL -rn | grep CIRCUITPY | awk '{print "/dev/" $1}')
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $0 /dev/sdX path/to/files"
+    exit 1
+fi
+
+DEVICE="$1"
+SRC_DIR="$2"
 MOUNT_POINT="/mnt"
 
-echo "Unmounting (in case still mounted)..."
+if [[ ! -b "$DEVICE" ]]; then
+    echo "Error: '$DEVICE' is not a block device."
+    exit 1
+fi
+
+if [[ ! -d "$SRC_DIR" ]]; then
+    echo "Error: '$SRC_DIR' is not a directory."
+    exit 1
+fi
+
+echo "Unmounting $DEVICE (if mounted)..."
 sudo umount "$DEVICE" 2>/dev/null || true
 sleep 0.5
 
-echo "Mounting..."
+echo "Mounting $DEVICE to $MOUNT_POINT..."
 sudo mount "$DEVICE" "$MOUNT_POINT"
 
-echo "Copying code.py..."
-sudo cp "$SRC_FILE" "$MOUNT_POINT"/code.py
+echo "Copying from '$SRC_DIR' to '$MOUNT_POINT'..."
+sudo cp -r "$SRC_DIR"/* "$MOUNT_POINT/"
 sync
 
-echo "Waiting briefly before unmount..."
+echo "Unmounting $MOUNT_POINT..."
 sleep 0.5
-
-echo "Unmounting..."
 sudo umount "$MOUNT_POINT"
 
-echo "Done."
+echo -e "\033[1;32mDone.\033[0m"
 
