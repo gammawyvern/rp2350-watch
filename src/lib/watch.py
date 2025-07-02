@@ -8,11 +8,11 @@ from adafruit_gc9a01a import GC9A01A
 
 
 class GC9A01ADisplay:
-    def __init__(self, backlight_on=True):
+    def __init__(self, backlight=True):
         # Backlight setup
         self.__backlight = digitalio.DigitalInOut(board.GP25)
         self.__backlight.direction = digitalio.Direction.OUTPUT
-        self.__backlight.value = backlight_on
+        self.set_backlight(backlight)
 
         # Reset display
         displayio.release_displays()
@@ -25,14 +25,20 @@ class GC9A01ADisplay:
 
         display_bus = FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=tft_rst)
         self.__display = GC9A01A(display_bus, width=240, height=240)
-        self.__display.root_group = displayio.Group()
+        self.reset()
 
-    def set_backlight_on(self, value):
+    def set_backlight(self, value):
         self.__backlight.value = value
 
-    def wipe(self):
+    def reset(self):
         self.__display.root_group = displayio.Group()
+        self.__element_index = {}
 
-    def add(self, element):
+    def add(self, name, element):
+        self.__element_index[name] = len(self.__display.root_group)
         self.__display.root_group.append(element)
+
+    def update(self, name, new_element):
+        element_index = self.__element_index[name]
+        self.__display.root_group[element_index] = new_element
 

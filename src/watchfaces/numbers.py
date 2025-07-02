@@ -11,7 +11,7 @@ display = GC9A01ADisplay()
 label = Label(terminalio.FONT, text="Classic", color=0xFFFFFF, scale=2)
 label.anchor_point = (0.5, 0.5)
 label.anchored_position = (120, 120)
-display.add(label)
+display.add("clock", label)
 
 start_hours = 12
 start_minutes = 0
