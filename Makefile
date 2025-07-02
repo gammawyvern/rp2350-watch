@@ -15,7 +15,7 @@ PY_FILES = $(wildcard $(LIB_DIR)/*.py)
 
 .PHONY: all clean
 
-all: clean setup copy_code compile_libs copy_vendor
+all: clean setup copy_code copy_vendor compile_libs
 
 clean:
 	rm -rf $(OUT_DIR)
@@ -31,12 +31,12 @@ copy_code:
 		fi
 		cp "$(WATCHFACE_DIR)/$(FACE).py" "$(OUT_DIR)/code.py"
 
+copy_vendor:
+	cp -r "$(VENDOR_LIB_DIR)"/* "$(OUT_LIB_DIR)/"
+
 compile_libs:
 	@for f in $(PY_FILES); do \
 		fn=$$(basename $$f .py); \
 		"$(MPY_CROSS)" "$$f" -o "$(OUT_LIB_DIR)/$$fn.mpy"; \
 	done
-
-copy_vendor:
-	cp -r "$(VENDOR_LIB_DIR)"/* "$(OUT_LIB_DIR)/"
 
