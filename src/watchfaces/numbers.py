@@ -1,33 +1,30 @@
-import watchface
+import terminalio
+import time
+
 from adafruit_display_text.label import Label
 
 from watch import GC9A01ADisplay
 
-# Setup watch
+
 display = GC9A01ADisplay()
 
-# Add time label
-time_label = Label(terminalio.FONT, text="00:00:00", color=0xFFFFFF, scale=3)
-time_label.anchor_point = (0.5, 0.5)
-time_label.anchored_position = (120, 120)
-display.add(time_label)
+label = Label(terminalio.FONT, text="Classic", color=0xFFFFFF, scale=2)
+label.anchor_point = (0.5, 0.5)
+label.anchored_position = (120, 120)
+display.add(label)
 
-# --- Simulated time start (boot = 12:00:00) ---
 start_hours = 12
 start_minutes = 0
 start_seconds = 0
 start_monotonic = time.monotonic()
 
-# --- Main loop ---
 while True:
     elapsed = int(time.monotonic() - start_monotonic)
     total_seconds = start_seconds + elapsed
+
     hours = (start_hours + (start_minutes + total_seconds // 60) // 60) % 24
     minutes = (start_minutes + total_seconds // 60) % 60
-    seconds = total_seconds % 60
 
-    time_str = f"{hours:02}:{minutes:02}"
-    time_label.text = time_str
-
-    time.sleep(0.5)
+    label.text = f"{hours:02}:{minutes:02}"
+    time.sleep(1)
 
