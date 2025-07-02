@@ -1,5 +1,10 @@
+ifndef FACE
+$(error FACE is not set. Usage: make FACE=your_watch_face)
+endif
+
 SRC_DIR = src
 LIB_DIR = $(SRC_DIR)/lib
+WATCHFACE_DIR = $(SRC_DIR)/watchfaces
 VENDOR_LIB_DIR = $(SRC_DIR)/vendor_lib
 MPY_CROSS = $(SRC_DIR)/tools/mpy-cross
 
@@ -16,10 +21,15 @@ clean:
 	rm -rf $(OUT_DIR)
 
 setup:
+	mkdir -p "$(OUT_DIR)"
 	mkdir -p "$(OUT_LIB_DIR)"
 
 copy_code:
-	cp "$(SRC_DIR)/code.py" "$(OUT_DIR)/code.py"
+		@if [ ! -f "$(WATCHFACE_DIR)/$(FACE).py" ]; then \
+			echo "Error: Watchface '$(FACE)' not found in $(WATCHFACE_DIR)/"; \
+			exit 1; \
+		fi
+		cp "$(WATCHFACE_DIR)/$(FACE).py" "$(OUT_DIR)/code.py"
 
 compile_libs:
 	@for f in $(PY_FILES); do \
