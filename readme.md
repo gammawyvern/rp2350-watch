@@ -4,6 +4,6 @@
 - Using CircuitPython 9.2.8
 
 ### Repo Notes
-- You should build mpy-cross from source (CircuitPython 9.2.8)
+- You need to build mpy-cross from source (CircuitPython 9.2.8)
 - Only supports single .py files under lib/ right now. No folders
 

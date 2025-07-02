@@ -41,8 +41,10 @@ start_minutes = 0
 start_seconds = 0
 start_monotonic = time.monotonic()
 
+time_label.text = text.OUTPUT_TEXT
 # --- Main loop ---
 while True:
+    continue
     elapsed = int(time.monotonic() - start_monotonic)
     total_seconds = start_seconds + elapsed
     hours = (start_hours + (start_minutes + total_seconds // 60) // 60) % 24
