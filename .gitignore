@@ -1,3 +1,5 @@
 src/tools/mpy-cross
 out/
 
+quick_deploy.sh
+
