@@ -1,5 +1,6 @@
 import terminalio
 import time
+import math
 
 from adafruit_display_shapes.rect import Rect
 
@@ -15,39 +16,61 @@ BREAK_COLOR =   0xC56B62
 WARMUP_DURATION =   5 * 60
 FOCUS_DURATION =    5 * 60
 BREAK_DURATION =    5 * 60
+MAX_DURATION =      5 * 60
 
-MAX_RECT_HEIGHT = 120
-RECT_WIDTH = 40
 CENTER_X = 120
 CENTER_Y = 120
+MAX_BAR_HEIGHT = 120
+BAR_WIDTH = 40
 
-warmup_rect =   Rect(x=CENTER_X - int(1.5 * RECT_WIDTH), y=110, width=RECT_WIDTH, height=20, fill=WARMUP_COLOR)
-# focus_rect =    Rect(x=CENTER_X - int(0.5 * RECT_WIDTH), y=110, width=RECT_WIDTH, height=20, fill=FOCUS_COLOR)
-# break_rect =    Rect(x=CENTER_X + int(0.5 * RECT_WIDTH), y=110, width=RECT_WIDTH, height=20, fill=BREAK_COLOR)
+WARMUP_X = CENTER_X + int(-1.5 * BAR_WIDTH)
+FOCUS_X = CENTER_X + int(-0.5 * BAR_WIDTH)
+BREAK_X = CENTER_X + int(0.5 * BAR_WIDTH)
+
+warmup_rect = Rect(x=WARMUP_X, y=110, width=BAR_WIDTH, height=20, fill=WARMUP_COLOR)
+focus_rect = Rect(x=FOCUS_X, y=110, width=BAR_WIDTH, height=20, fill=FOCUS_COLOR)
+break_rect = Rect(x=BREAK_X, y=110, width=BAR_WIDTH, height=20, fill=BREAK_COLOR)
 
 display.add('w', warmup_rect)
-# display.add("focus", focus_rect)
-# display.add("break", break_rect)
+display.add('f', focus_rect)
+display.add('b', break_rect)
+
+
+def create_bar(x, time_counted, max_time, color):
+    if time_counted < 0:
+        time_counted = 0
+
+    percent_done = time_counted / max_time
+    bar_height = int(MAX_BAR_HEIGHT * (1 - percent_done))
+
+    if bar_height > 0:
+        bar_y = int(CENTER_Y - (bar_height / 2))
+    else:
+        bar_height = 2
+        bar_y = int(CENTER_Y - 1)  
+        color = 0xFFFFFF
+
+    return Rect(
+        x=x,
+        y=bar_y,
+        width=BAR_WIDTH,
+        height=bar_height, 
+        fill=color
+    )
 
 start_time = time.monotonic()
-
 while True:
-    timer_time = time.monotonic() - start_time
+    time_elapsed = time.monotonic() - start_time
 
-    if timer_time < WARMUP_DURATION:
-        percent_done = timer_time / WARMUP_DURATION
-        bar_height = int(MAX_RECT_HEIGHT * percent_done)
-        new_rect = Rect(
-            x=int(CENTER_X - int(1.5 * RECT_WIDTH)),
-            y=int(CENTER_Y - int(bar_height / 2)),
-            width=int(RECT_WIDTH),
-            height=int(bar_height),
-            fill=WARMUP_COLOR
-        )
+    warmup_time_counted = time_elapsed
+    focus_time_counted = time_elapsed - WARMUP_DURATION
+    break_time_counted = time_elapsed - (WARMUP_DURATION + FOCUS_DURATION)
 
-        display.update('w', new_rect)
-    else:
-        start_time = time.monotonic()
+    next_warmup_rect = create_bar(WARMUP_X, warmup_time_counted, MAX_DURATION, WARMUP_COLOR)
+    next_focus_rect = create_bar(FOCUS_X, focus_time_counted, MAX_DURATION, FOCUS_COLOR)
+    next_break_rect = create_bar(BREAK_X, break_time_counted, MAX_DURATION, BREAK_COLOR)
 
-    time.sleep(5)
+    display.update('w', next_warmup_rect)
+    display.update('f', next_focus_rect)
+    display.update('b', next_break_rect)
 
