@@ -34,7 +34,7 @@ break_rect = Rect(x=BREAK_X, y=100, width=BAR_WIDTH, height=20, fill=BREAK_COLOR
 
 section_time = Label(terminalio.FONT, text="Pomodoro", color=0xFFFFFF, scale=2)
 section_time.anchor_point = (0.5, 0.5)
-section_time.anchored_position = (CENTER_X, CENTER_Y + 40)
+section_time.anchored_position = (CENTER_X, CENTER_Y + 30)
 
 display.add('w', warmup_rect)
 display.add('f', focus_rect)
