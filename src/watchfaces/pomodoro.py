@@ -45,6 +45,8 @@ def create_bar(x, time_counted, max_time, color):
     bar_height = int(MAX_BAR_HEIGHT * bar_scale * percent_left)
 
     if bar_height > 0:
+        if bar_height % 2 == 1:
+            bar_height += 1
         bar_y = int(CENTER_Y - (bar_height / 2))
     else:
         bar_height = 2
