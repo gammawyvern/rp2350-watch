@@ -13,10 +13,10 @@ WARMUP_COLOR =  0x6C739C
 FOCUS_COLOR =   0x424658
 BREAK_COLOR =   0xC56B62
 
-WARMUP_DURATION =   5 * 60
-FOCUS_DURATION =    5 * 60
-BREAK_DURATION =    5 * 60
-MAX_DURATION =      5 * 60
+WARMUP_DURATION =   5
+FOCUS_DURATION =    30
+BREAK_DURATION =    5
+MAX_DURATION =      30
 
 CENTER_X = 120
 CENTER_Y = 120
@@ -40,8 +40,9 @@ def create_bar(x, time_counted, max_time, color):
     if time_counted < 0:
         time_counted = 0
 
-    percent_done = time_counted / max_time
-    bar_height = int(MAX_BAR_HEIGHT * (1 - percent_done))
+    percent_left = 1 - (time_counted / max_time)
+    bar_scale = max_time / MAX_DURATION
+    bar_height = int(MAX_BAR_HEIGHT * bar_scale * percent_left)
 
     if bar_height > 0:
         bar_y = int(CENTER_Y - (bar_height / 2))
@@ -66,9 +67,9 @@ while True:
     focus_time_counted = time_elapsed - WARMUP_DURATION
     break_time_counted = time_elapsed - (WARMUP_DURATION + FOCUS_DURATION)
 
-    next_warmup_rect = create_bar(WARMUP_X, warmup_time_counted, MAX_DURATION, WARMUP_COLOR)
-    next_focus_rect = create_bar(FOCUS_X, focus_time_counted, MAX_DURATION, FOCUS_COLOR)
-    next_break_rect = create_bar(BREAK_X, break_time_counted, MAX_DURATION, BREAK_COLOR)
+    next_warmup_rect = create_bar(WARMUP_X, warmup_time_counted, WARMUP_DURATION, WARMUP_COLOR)
+    next_focus_rect = create_bar(FOCUS_X, focus_time_counted, FOCUS_DURATION, FOCUS_COLOR)
+    next_break_rect = create_bar(BREAK_X, break_time_counted, BREAK_DURATION, BREAK_COLOR)
 
     display.update('w', next_warmup_rect)
     display.update('f', next_focus_rect)
