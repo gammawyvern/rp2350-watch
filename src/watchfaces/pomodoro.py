@@ -75,3 +75,6 @@ while True:
     display.update('f', next_focus_rect)
     display.update('b', next_break_rect)
 
+    if time_elapsed > (WARMUP_DURATION + FOCUS_DURATION + BREAK_DURATION):
+        start_time = time.monotonic()
+
